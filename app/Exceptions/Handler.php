@@ -63,7 +63,7 @@ class Handler extends ExceptionHandler
                 $status = 404;
                 break;
             case \League\OAuth2\Server\Exception\InvalidRequestException::class:
-                $status = 400;
+                $status = 401;
                 $data = $e->getMessage();
                 break;
             case \League\OAuth2\Server\Exception\InvalidCredentialsException::class:
