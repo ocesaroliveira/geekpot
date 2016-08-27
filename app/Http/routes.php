@@ -19,6 +19,10 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'v1'], function() {
 
+    Route::post('oauth/access_token', function() {
+        return response()->json(Authorizer::issueAccessToken());
+    });
+
     Route::group(['prefix' => 'user'], function() {
 
         Route::post('/', [
