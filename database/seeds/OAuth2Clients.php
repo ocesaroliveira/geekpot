@@ -11,6 +11,15 @@ class OAuth2Clients extends Seeder
      */
     public function run()
     {
+        $alreadyExists = DB::table('oauth_clients')
+            ->where('id', '=', 1)
+            ->orWhere('id', '=', 2)
+            ->count();
+
+        if ($alreadyExists > 0) {
+            return;
+        }
+
         $adminSecret = md5('admin');
         $clientSecret = md5('client');
 
