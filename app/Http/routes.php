@@ -29,5 +29,29 @@ Route::group(['prefix' => 'v1'], function() {
             'as'   => 'v1.user.create',
             'uses' => '\\App\\Http\\Controllers\\UserController@create'
         ]);
+
+        Route::get('/', [
+            'as'   => 'v1.user.get',
+            'uses' => '\\App\\Http\\Controllers\\UserController@get',
+            'middleware' => 'oauth:read'
+        ]);
+
+        Route::get('/inverso', [
+            'as'   => 'v1.user.revert',
+            'uses' => '\\App\\Http\\Controllers\\UserController@revert',
+            'middleware' => 'oauth:read'
+        ]);
+
+        Route::put('/', [
+            'as'   => 'v1.user.update',
+            'uses' => '\\App\\Http\\Controllers\\UserController@update',
+            'middleware' => 'oauth:update'
+        ]);
+
+        Route::delete('/', [
+            'as'   => 'v1.user.delete',
+            'uses' => '\\App\\Http\\Controllers\\UserController@delete',
+            'middleware' => 'oauth:delete'
+        ]);
     });
 });
