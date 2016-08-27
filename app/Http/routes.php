@@ -16,3 +16,14 @@ Route::get('/', function () {
         'Hello' => 'World'
     ]);
 });
+
+Route::group(['prefix' => 'v1'], function() {
+
+    Route::group(['prefix' => 'user'], function() {
+
+        Route::post('/', [
+            'as'   => 'v1.user.create',
+            'uses' => '\\App\\Http\\Controllers\\UserController@create'
+        ]);
+    });
+});
