@@ -45,6 +45,39 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        return parent::render($request, $e);
+        $data = [];
+        $classException = get_class($e);
+
+        switch ($classException) {
+            case \League\OAuth2\Server\Exception\AccessDeniedException::class:
+                $status = 403;
+                break;
+            case \Illuminate\Foundation\Validation\ValidationException::class:
+                $data = $e->validator->errors()->toArray();
+                $status = 422;
+                break;
+            case \Symfony\Component\Debug\Exception\FatalThrowableError::class:
+                $status = 500;
+                break;
+            case \Illuminate\Database\Eloquent\ModelNotFoundException::class:
+                $status = 404;
+                break;
+            case \League\OAuth2\Server\Exception\InvalidRequestException::class:
+                $status = 400;
+                $data = $e->getMessage();
+                break;
+            case \League\OAuth2\Server\Exception\InvalidCredentialsException::class:
+                $status = 401;
+                $data = $e->getMessage();
+                break;
+            default:
+                $status = $e->getStatusCode();
+                break;
+        }
+
+        return response()->json([
+            'status_code' => $status,
+            'data' => $data
+        ], $status);
     }
 }
