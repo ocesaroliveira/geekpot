@@ -53,5 +53,20 @@ Route::group(['prefix' => 'v1'], function() {
             'uses' => '\\App\\Http\\Controllers\\UserController@delete',
             'middleware' => 'oauth:delete'
         ]);
+
+        Route::group(['prefix' => 'admin'], function() {
+
+            Route::get('/list', [
+                'as'   => 'v1.user.admin.list_users',
+                'uses' => '\\App\\Http\\Controllers\\AdminController@list_users',
+                'middleware' => 'oauth:admin_list'
+            ]);
+
+            Route::get('/list/deleted', [
+                'as'   => 'v1.user.admin.list_users_deleted',
+                'uses' => '\\App\\Http\\Controllers\\AdminController@list_users_deleted',
+                'middleware' => 'oauth:admin_list_deleted'
+            ]);
+        });
     });
 });
