@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
+use App\Service\User as UserServices;
+
 use App\User;
 
 class AdminController extends Controller
@@ -34,4 +36,41 @@ class AdminController extends Controller
             ]
         ]);
     }
+
+    public function manage_update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $data = $request->all();
+
+        $updateService = new UserServices\Update($user, $data);
+        $user = $updateService->execute();
+
+        if ($user instanceof \Illuminate\Validation\Validator) {
+            return response()->json([
+                'data' => ['errors' => $user->errors()->toArray()]
+            ], 422);
+        }
+
+        return response()->json([
+            'data' => [
+                'user' => $user,
+            ]
+        ]);
+    }
+
+    public function manage_delete(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $deleteService = new UserServices\Delete($user);
+        $user = $deleteService->execute();
+
+        return response()->json([
+            'data' => [
+                'user' => $user
+            ]
+        ]);
+    }
+
 }
