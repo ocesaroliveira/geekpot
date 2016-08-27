@@ -70,6 +70,10 @@ class Handler extends ExceptionHandler
                 $status = 401;
                 $data = $e->getMessage();
                 break;
+            case \League\OAuth2\Server\Exception\InvalidClientException::class:
+                $status = 401;
+                $data = $e->getMessage();
+                break;
             default:
                 $status = $e->getStatusCode();
                 break;
