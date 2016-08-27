@@ -61,7 +61,7 @@ class Create
 
             $user = $this->createUser();
             $userCredentials = $this->createUserCredentials($user);
-            // $user = $this->sendEmail($user, $userCredentials);
+            $this->sendEmail($user, $userCredentials);
 
             DB::commit();
         } catch (Exception $e) {
