@@ -6,68 +6,132 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
-use DateTime;
-use Exception;
+use App\Service\User as UserServices;
 
 use App\User;
 
-use DB;
-use Hash;
+use Authorizer;
 
 class UserController extends Controller
 {
 
     public function create(Request $request)
     {
-        $this->validate($request, [
-            'email' => [
-                'required',
-                'email',
-                'unique:users'
-            ],
-            'password' => [
-                'required',
-                'between:6,20'
-            ]
-        ]);
+        $data = $request->all();
 
-        DB::beginTransaction();
+        $createService = new UserServices\Create($data);
+        $userData = $createService->execute();
 
-        try {
-            // Create an user
-            $data = $request->all();
-            $data['password'] = Hash::make($data['password']);
-
-            $user = User::create($data);
-
-            // Create user credentials
-            $clientSecret = substr(Hash::make($data['email']), 0, 40);
-            $now = (new DateTime())->format('Y-m-d H:i:s');
-            $oauthClientData = [
-                'id' => $user->email,
-                'name' => !is_null($user->name) ? $user->name : $user->email,
-                'secret' => $clientSecret,
-                'created_at' => $now,
-                'updated_at' => $now
-            ];
-
-            DB::table('oauth_clients')
-                ->insert($oauthClientData);
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-
+        if (false === $userData) {
             return response()->json([
-                'data' => $e->getMessage()
+                'data' => []
             ], 400);
+        }
+
+        if ($userData instanceof \Illuminate\Validation\Validator) {
+            return response()->json([
+                'data' => ['errors' => $userData->errors()->toArray()]
+            ], 422);
         }
 
         return response()->json([
             'data' => [
-                'user'  => $user,
-                'oauth' => $oauthClientData
+                'user' => $userData['user'],
+                'userCredentials' => $userData['userCredentials']
             ]
         ]);
+    }
+
+    public function update(Request $request)
+    {
+        $id = Authorizer::getResourceOwnerId();
+        $user = User::findOrFail($id);
+
+        $data = $request->all();
+
+        $updateService = new UserServices\Update($user, $data);
+        $user = $updateService->execute();
+
+        if ($user instanceof \Illuminate\Validation\Validator) {
+            return response()->json([
+                'data' => ['errors' => $user->errors()->toArray()]
+            ], 422);
+        }
+
+        return response()->json([
+            'data' => [
+                'user' => $user,
+            ]
+        ]);
+    }
+
+    public function get(Request $request)
+    {
+        $id = Authorizer::getResourceOwnerId();
+
+        $user = User::findOrFail($id);
+
+        return response()->json([
+            'data' => [
+                'user' => $user
+            ]
+        ]);
+    }
+
+    public function delete(Request $request)
+    {
+        $id = Authorizer::getResourceOwnerId();
+
+        $user = User::findOrFail($id);
+
+        $deleteService = new UserServices\Delete($user);
+        $user = $deleteService->execute();
+
+        return response()->json([
+            'data' => [
+                'user' => $user
+            ]
+        ]);
+    }
+
+    public function revert(Request $request)
+    {
+        $id = Authorizer::getResourceOwnerId();
+
+        $user = User::findOrFail($id);
+
+        $revertName = '';
+        if (!empty($user->name)) {
+            $revertName = $this->revertString($user->name);
+        }
+
+        $revertEmail = '';
+        if (!empty($user->email)) {
+            $revertEmail = $this->revertString($user->email);
+        }
+
+        return response()->json([
+            'atad' => [
+                'resu' => [
+                    'eman' => $revertName,
+                    'liame' => $revertEmail,
+                ]
+            ]
+        ]);
+    }
+
+    private function revertString($string)
+    {
+        $count = strlen($string) - 1;
+        if ($count <= 0) {
+            return '';
+        }
+
+        $revert = '';
+        for ($x = $count; $x >= 0; $x--) {
+            $revert .= $string[$x];
+        }
+
+        return utf8_encode($revert);
     }
 }
