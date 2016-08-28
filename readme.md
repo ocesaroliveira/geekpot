@@ -21,11 +21,6 @@ Para enviar o e-mail transacional, eu utilizei a plataforma do [Sendgrid](http:/
 
 Utilizei o [Homestead](https://laravel.com/docs/5.2/homestead) como ambiente de desenvolvimento.
 
-## O que eu achei
-Um teste muito bom, pensando em conceitos modernos, como o OAuth2 e eu tenho experiência com essa teoria utilizado. Foi um teste desafiador e, principalemente, longo. Gastei muito tempo procurando uma plataforma de envio de e-mail sem verificação de domínio e com a ativação da conta.
-
-Como o prazo é de apenas um dia, não deu para fazer testes unitários com os serviços dos usuários.
-
 ## Instalação
 Você deve clonar esse repositório em uma pasta que fique confortável para você conseguir executá-lo. Recomendo o Homestead, já citado anteriormente.
 
@@ -35,12 +30,18 @@ Após clonar o repositório, você vai precisar do [Composer](https://getcompose
 $ composer install
 ```
 
-Esse comando irá baixar as dependências do projeto e executar os scripts de instalação. Você verá que foi criado um arquivo .env na raiz do projeto. Esse arquivo guarda váriaveis de ambiente. Você irá precisar preencher algumas dessas váriaveis ao seu gosto. Uma delas é a seção de conexão com banco de dados. Veja um exemplo abaixo de como ficaria:
+Esse comando irá baixar as dependências do projeto e executar os scripts de instalação. Você precisar criar um arquivo .env na raiz do projeto. Esse arquivo guarda váriaveis de ambiente. Para isso, basta rodar o seguinte comando:
+
+```
+$ cp .env.example .env
+```
+
+Você irá precisar preencher esse arquivo com algumas dessas váriaveis, por exemplo, a seção de conexão com banco de dados. Veja um exemplo abaixo de como ficaria:
 
 ```
 APP_ENV=local
 APP_DEBUG=true
-APP_KEY=base64:d5EY/EMxwdYE8EKfN/hLo9Lzung4Cdtt0qP5vnqPkbE=
+APP_KEY=SomeRandomString
 APP_URL=http://api.geekpot.com
 
 DB_CONNECTION=mysql
@@ -51,5 +52,25 @@ DB_USERNAME=homestead
 DB_PASSWORD=secret
 ```
 
+Com o arquivo criado, você irá precisar gerar uma key da app que o Laravel utiliza. Para gerar essa key, eles criaram uma plataforma de comandos, chamada Artisan. Basta você rodar:
+
+```
+$ php artisan key:generate
+```
+
+Estamos quase lá! Agora precisamos criar nossas tabelas e preenche-las com os dados iniciais. Para isso, execute os dois próximos comandos:
+
+```
+$ php artisan migrate
+$ php artisan db:seed
+```
+
+Pronto! Você instalou corretamente o projeto! Caso algo dê errado, estou disponível no cesar.o.almeida@gmail.com ou no Skype: cesar.o.almeida
+
 ## Sobre a API
 As rotas da API podem ser vistas [aqui](api.md).
+
+## O que eu achei
+Um teste muito bom, pensando em conceitos modernos, como o OAuth2 e eu tenho experiência com essa teoria utilizado. Foi um teste desafiador e, principalemente, longo. Gastei muito tempo procurando uma plataforma de envio de e-mail sem verificação de domínio e com a ativação da conta.
+
+Como o prazo é de apenas um dia, não deu para fazer testes unitários com os serviços dos usuários e não deu para utilizar um sistema de cache e utilizar um processo de filas para colocar o envio do e-mail em paralelo e diminuir o tempo de resposta da rota de cadastro.
