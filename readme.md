@@ -68,7 +68,7 @@ $ php artisan db:seed
 Pronto! Você instalou corretamente o projeto! Caso algo dê errado, estou disponível no cesar.o.almeida@gmail.com ou no Skype: cesar.o.almeida
 
 ## Sobre a API
-As rotas da API podem ser vistas [aqui](api.md).
+As rotas da API podem ser vistas [aqui](https://github.com/ocesaroliveira/geekpot/blob/master/api.md).
 
 ## O que eu achei
 Um teste muito bom, pensando em conceitos modernos, como o OAuth2 e eu tenho experiência com essa teoria utilizado. Foi um teste desafiador e, principalemente, longo. Gastei muito tempo procurando uma plataforma de envio de e-mail sem verificação de domínio e com a ativação da conta.
