@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "ocesaroliveira/geekpot",
+    "description": "GeekPot IT Test",
+    "keywords": ["geekpot", "test"],
     "license": "MIT",
     "type": "project",
     "require": {
